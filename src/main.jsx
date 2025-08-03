@@ -12,7 +12,8 @@ import Register from './Components/Register';
 import AuthProvider from './Provider/AuthProvider';
 import Dashboard from './Components/Dashboard';
 import PrivateRoute from './Routes/PrivateRoute';
-
+import TourDetails from './Components/TourDetails';
+import AllTours from './pages/AllTours';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -35,6 +36,14 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
       },
+      {
+        path: "/tours/:id",
+        element: <PrivateRoute><TourDetails></TourDetails></PrivateRoute>,
+      },
+      {
+        path: "alltours",
+        element: <AllTours></AllTours>,
+      },
 
 
 
@@ -46,8 +55,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-   <AuthProvider>
-     <RouterProvider router={router} />
-   </AuthProvider>
+    <AuthProvider>
+          <RouterProvider router={router} />  
+    </AuthProvider>
   </StrictMode>,
 )

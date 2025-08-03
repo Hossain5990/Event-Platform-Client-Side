@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { AuthContext } from '../Provider/AuthProvider';
+import { PiRocketLaunch, PiSignOutBold } from "react-icons/pi";
+
 
 const Navbar = () => {
     const { user, signOutUser } = useContext(AuthContext);
@@ -17,24 +19,29 @@ const Navbar = () => {
 
     }
 
+    const navLinkClass = ({ isActive }) =>
+        isActive
+            ? 'text-base font-bold text-yellow-500 border-b-2 border-yellow-500 pb-1'
+            : 'text-base font-bold text-gray-500';
+
+
     const links = <>
 
-        <li className='text-base font-bold'><NavLink to='/'>Home</NavLink></li>
-        <li className='text-base font-bold'><NavLink to='/login'>Login</NavLink></li>
-        <li className='text-base font-bold'><NavLink to='/register'>Register</NavLink></li>
+        <li><NavLink  className={navLinkClass} to='/'>Home</NavLink></li>
+        <li><NavLink  className={navLinkClass} to='/alltours'>All Tours</NavLink></li>
         {
-            user  &&
+            user &&
             <>
-              <li className='text-base font-bold'><NavLink to='/dashboard'>Dashboard</NavLink></li>
+                <li><NavLink  className={navLinkClass} to='/dashboard'>Dashboard</NavLink></li>
             </>
-            
+
         }
 
     </>
 
     return (
 
-        <div className="navbar bg-base-100 shadow-sm mt-16">
+        <div className="navbar bg-base-100 shadow-sm py-6">
             <div className="navbar-start">
                 <div className="dropdown">
                     <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -42,17 +49,20 @@ const Navbar = () => {
                     </div>
                     <ul
                         tabIndex={0}
-                        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow md:gap-10">
+                        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow md:gap-2">
                         {
                             links
                         }
 
                     </ul>
                 </div>
-                <a className=" text-2xl font-bold text-black">Quick<span className='text-red-600'>Event</span></a>
+                <div className='flex items-center'>
+                    <a className="text-2xl md:text-5xl font-bold text-black">Quick<span className='text-yellow-500'>Event</span></a>
+                <a className="text-2xl md:text-5xl font-bold text-yellow-500"><PiRocketLaunch /></a>
+                </div>
             </div>
             <div className="navbar-center hidden lg:flex">
-                <ul className="menu menu-horizontal px-1 md:gap-10">
+                <ul className="menu menu-horizontal px-1 md:gap-2">
                     {
                         links
                     }
@@ -63,10 +73,14 @@ const Navbar = () => {
                 {
                     user ?
                         <>
-                            <a className="btn">{user?.email}</a>
-                            <button onClick={handleSignOut} className="btn">Sign Out</button>
+                            <a className="hidden md:flex btn bg-yellow-500 text-white font-semibold md:text-lg">{user?.email}</a>
+                            <button onClick={handleSignOut} className="btn bg-yellow-500 text-white font-semibold md:text-lg items-center">Sign Out <PiSignOutBold /></button>
                         </>
-                        : <button className="btn rounded-full"></button>
+                        :
+                        <>
+                            <button className="btn bg-yellow-500 text-white font-semibold md:text-lg"><Link to='/login'>Login</Link></button>
+                            <button className="btn bg-yellow-500 text-white font-semibold md:text-lg"><Link to='/register'>Sign Up</Link></button>
+                        </>
                 }
             </div>
         </div>

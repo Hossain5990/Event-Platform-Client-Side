@@ -1,10 +1,23 @@
 import React from 'react';
+import Banner from './Banner';
+import Choose from './Choose';
+import Call from './Call';
+import Footer from './Footer';
+import PopularTours from './PopularTours';
+
+
 
 const Home = () => {
     return (
         <div>
-            <h2 className='text-4xl font-bold text-black text-center mt-20'>Home Page</h2>
-            
+
+           
+            <Banner></Banner>
+            <PopularTours></PopularTours>
+            <Call></Call>
+            <Choose></Choose>
+            <Footer></Footer>
+
         </div>
     );
 };

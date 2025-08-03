@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "title": "Mountain Biking Adventure",
+    "image": "https://images.hive.blog/DQmQXnxtLPeZGUq4mURJiZpUeBLRht3iAXnAiygZKwrMcPN/images%20(4).jpeg",
+    "description": "Thrilling mountain bike ride through rugged trails.",
+    "price": 1800,
+    "location": "Sajek Valley, Bangladesh",
+    "date": "2025-09-10",
+    "organizer": "AdventureX Bangladesh",
+    "ticketQuantity": 30,
+    "category": "Popular"
+  },
+  {
+    "id": 2,
+    "title": "Football Fan Tour",
+    "image": "https://media.istockphoto.com/id/469569148/photo/soccer-fans-at-stadium.jpg?s=612x612&w=0&k=20&c=onoPfo3cZe9fH_F_9lXB1d1n3w2HGs2o6640lC-OFZg=",
+    "description": "Visit top stadiums and watch live football matches.",
+    "price": 2500,
+    "location": "Dhaka, Bangladesh",
+    "date": "2025-09-20",
+    "organizer": "FanTours Ltd.",
+    "ticketQuantity": 50,
+    "category": "Popular"
+  },
+  {
+    "id": 3,
+    "title": "Cricket Stadium Tour",
+    "image": "https://i.ytimg.com/vi/3W4yUFMdMFc/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLB6q9nTVKONc7Vpf2SqVPVPdsjDgQ",
+    "description": "Explore iconic cricket stadiums and training sessions.",
+    "price": 1500,
+    "location": "Chattogram, Bangladesh",
+    "date": "2025-08-18",
+    "organizer": "Cricket Roots",
+    "ticketQuantity": 40,
+    "category": "Popular"
+  },
+  {
+    "id": 4,
+    "title": "Paragliding & Skydiving",
+    "image": "https://www.skydivecarolina.com/wp-content/uploads/2024/11/paragliding-3422662_1920-1200x800-1.jpg",
+    "description": "Feel the adrenaline rush in the sky!",
+    "price": 3000,
+    "location": "Sylhet, Bangladesh",
+    "date": "2025-10-01",
+    "organizer": "SkyRush Events",
+    "ticketQuantity": 25,
+    "category": "Popular"
+  },
+  {
+    "id": 5,
+    "title": "Kayaking Expedition",
+    "image": "https://static.wixstatic.com/media/db73a1_1270bd5eed0649c2826549590831ac2a~mv2.jpg/v1/fill/w_2500,h_1381,al_c/db73a1_1270bd5eed0649c2826549590831ac2a~mv2.jpg",
+    "description": "Paddle through peaceful rivers and explore hidden gems.",
+    "price": 1300,
+    "location": "Sunamganj, Bangladesh",
+    "date": "2025-09-25",
+    "organizer": "RiverFlow Adventures",
+    "ticketQuantity": 20,
+    "category": "Popular"
+  },
+  {
+    "id": 6,
+    "title": "Rock Climbing Camp",
+    "image": "https://avid4.com/wp-content/uploads/2020/04/climb8-1024x682.png",
+    "description": "A challenge for adventure lovers with professional support.",
+    "price": 2000,
+    "location": "Bandarban, Bangladesh",
+    "date": "2025-11-10",
+    "organizer": "Vertical Limits",
+    "ticketQuantity": 35,
+    "category": "Popular"
+  },
+  {
+    "id": 7,
+    "title": "Beach Volleyball Bash",
+    "image": "https://programs.seminaire.com/uploads/medium_seminaire_marbella_tournoi_volley_ball_971bdc4d80.jpg",
+    "description": "Play beach volleyball and enjoy the sea breeze.",
+    "price": 900,
+    "location": "Cox’s Bazar, Bangladesh",
+    "date": "2025-08-30",
+    "organizer": "BeachPlay BD",
+    "ticketQuantity": 60,
+    "category": "Popular"
+  },
+  {
+    "id": 8,
+    "title": "Marathon Participation Tour",
+    "image": "https://www.globaltimes.cn/Portals/0/attachment/2024/2024-04-07/e5661c3e-1354-4588-927d-7469e3f0ee6b.jpeg",
+    "description": "Join the biggest marathon events across the country.",
+    "price": 1100,
+    "location": "Dhaka, Bangladesh",
+    "date": "2025-09-05",
+    "organizer": "RunNation Bangladesh",
+    "ticketQuantity": 100,
+    "category": "Popular"
+  },
+  {
+    "id": 9,
+    "title": "Sports Photography Tour",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/0/04/Photographer_%2848010186141%29.jpg",
+    "description": "Capture action shots and behind-the-scenes moments.",
+    "price": 950,
+    "location": "Rajshahi, Bangladesh",
+    "date": "2025-09-22",
+    "organizer": "FrameIt Sports",
+    "ticketQuantity": 15,
+    "category": "Popular"
+  }
+]
