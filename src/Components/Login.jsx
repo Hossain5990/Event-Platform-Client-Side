@@ -1,12 +1,15 @@
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../Provider/AuthProvider';
 import { useContext } from 'react';
 import SocialSignUp from './SocialSignUp';
+import Swal from 'sweetalert2';
 
 
 const Login = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
 
     const { signInUser } = useContext(AuthContext);
     const handleLogin = e => {
@@ -17,8 +20,16 @@ const Login = () => {
         signInUser(email, password)
             .then((result) => {
                 console.log(result.user)
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "User Login Successfully",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                navigate(from, { replace: true }); 
                 e.target.reset();
-                navigate("/")
+
             })
             .catch((error) => {
                 console.log("Error", error.message)
@@ -30,7 +41,7 @@ const Login = () => {
     return (
 
         <div>
-    
+
             <div className="hero">
                 <div className="hero-content flex-col ">
                     <div className="text-center">

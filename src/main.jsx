@@ -14,6 +14,8 @@ import Dashboard from './Components/Dashboard';
 import PrivateRoute from './Routes/PrivateRoute';
 import TourDetails from './Components/TourDetails';
 import AllTours from './pages/AllTours';
+import BookTickets from './Components/BookTickets';
+import MyTickets from './pages/MyTickets';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,6 +41,14 @@ const router = createBrowserRouter([
       {
         path: "/tours/:id",
         element: <PrivateRoute><TourDetails></TourDetails></PrivateRoute>,
+      },
+       {
+        path: "/bookticket/:id",
+        element: <PrivateRoute><BookTickets></BookTickets></PrivateRoute>,
+      },
+      {
+        path: "mytickets",
+        element: <PrivateRoute><MyTickets></MyTickets></PrivateRoute>,
       },
       {
         path: "alltours",

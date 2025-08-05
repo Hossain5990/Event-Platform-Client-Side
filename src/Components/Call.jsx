@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../Provider/AuthProvider'; // make sure the path is correct
 
 const Call = () => {
+    const { user } = useContext(AuthContext);
+
     return (
-        <div className='my-10'>
+        <div className='my-5'>
             <section className="bg-yellow-500 py-12 text-center text-black">
                 <h2 className="text-3xl font-bold mb-4">Ready to Explore?</h2>
                 <p className="mb-6 text-lg">Register now and start your adventure today!</p>
-                <Link to="/register" className="bg-black text-white py-2 px-4 rounded hover:bg-gray-800">
+
+                <Link
+                    to={user ? "/alltours" : "/register"}
+                    className="bg-black text-white py-2 px-4 rounded hover:bg-gray-800"
+                >
                     Get Started
                 </Link>
             </section>
-
         </div>
     );
 };

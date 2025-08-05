@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const TourDetails = () => {
@@ -7,12 +7,13 @@ const TourDetails = () => {
     const [tour, setTour] = useState(null);
 
     useEffect(() => {
-        fetch("/allTours.json")
-            .then(res => res.json())
-            .then(data => {
-                const selected = data.find(t => t.id === parseInt(id));
-                setTour(selected);
-            });
+        fetch(`http://localhost:5000/tours/${id}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Tour not found");
+                return res.json();
+            })
+            .then(data => setTour(data))
+            .catch(err => console.error("Error loading tour:", err));
     }, [id]);
 
     if (!tour) return <p className="p-6 text-center">Loading tour details...</p>;
@@ -41,9 +42,9 @@ const TourDetails = () => {
                         <p><strong>Available Tickets:</strong> {tour.ticketQuantity}</p>
                         <p><strong>Category:</strong> {tour.category}</p>
                     </div>
-                    <button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-4 py-2 rounded">
+                    <Link to={`/bookticket/${tour._id}`}><button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-4 py-2 rounded">
                         Book Now
-                    </button>
+                    </button></Link>
                 </div>
             </div>
         </div>

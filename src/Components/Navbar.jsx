@@ -1,16 +1,26 @@
 import React, { useContext } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../Provider/AuthProvider';
 import { PiRocketLaunch, PiSignOutBold } from "react-icons/pi";
+import Swal from 'sweetalert2';
 
 
 const Navbar = () => {
     const { user, signOutUser } = useContext(AuthContext);
 
+
     const handleSignOut = () => {
         signOutUser()
             .then((result) => {
                 console.log("user Logout Succesfully")
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "User SignOut Successfully",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
             })
             .catch((error) => {
                 console.log("Error", error.message)
@@ -27,12 +37,13 @@ const Navbar = () => {
 
     const links = <>
 
-        <li><NavLink  className={navLinkClass} to='/'>Home</NavLink></li>
-        <li><NavLink  className={navLinkClass} to='/alltours'>All Tours</NavLink></li>
+        <li><NavLink className={navLinkClass} to='/'>Home</NavLink></li>
+        <li><NavLink className={navLinkClass} to='/alltours'>All Tours</NavLink></li>
         {
             user &&
             <>
-                <li><NavLink  className={navLinkClass} to='/dashboard'>Dashboard</NavLink></li>
+                <li><NavLink className={navLinkClass} to='/mytickets'>My Tickets</NavLink></li>
+                <li><NavLink className={navLinkClass} to='/dashboard'>Dashboard</NavLink></li>
             </>
 
         }
@@ -58,7 +69,7 @@ const Navbar = () => {
                 </div>
                 <div className='flex items-center'>
                     <a className="text-2xl md:text-5xl font-bold text-black">Quick<span className='text-yellow-500'>Event</span></a>
-                <a className="text-2xl md:text-5xl font-bold text-yellow-500"><PiRocketLaunch /></a>
+                    <a className="text-2xl md:text-5xl font-bold text-yellow-500"><PiRocketLaunch /></a>
                 </div>
             </div>
             <div className="navbar-center hidden lg:flex">
