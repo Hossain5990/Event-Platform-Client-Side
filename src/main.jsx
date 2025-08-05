@@ -14,6 +14,10 @@ import Dashboard from './Components/Dashboard';
 import PrivateRoute from './Routes/PrivateRoute';
 import TourDetails from './Components/TourDetails';
 import AllTours from './pages/AllTours';
+import AddEvents from './pages/AddEvents';
+import AllUsers from './pages/AllUsers';
+import MyEvents from './pages/MyEvents';
+import AdminDashboard from './pages/AdminDashboard';
 import BookTickets from './Components/BookTickets';
 import MyTickets from './pages/MyTickets';
 const router = createBrowserRouter([
@@ -53,6 +57,22 @@ const router = createBrowserRouter([
       {
         path: "alltours",
         element: <AllTours></AllTours>,
+      },
+      {
+        path: "addevents",
+        element: <PrivateRoute><AddEvents></AddEvents></PrivateRoute>,
+      },
+      {
+        path: "myevents",
+        element: <PrivateRoute><MyEvents></MyEvents></PrivateRoute>,
+      },
+      {
+        path: "allusers",
+        element: <PrivateRoute><AllUsers></AllUsers></PrivateRoute>,
+      },
+      {
+        path: "admindashboard",
+        element: <PrivateRoute><AdminDashboard></AdminDashboard></PrivateRoute>,
       },
 
 

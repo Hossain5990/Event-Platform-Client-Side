@@ -30,29 +30,51 @@ const Register = () => {
             .then((result) => {
                 const currentUser = result.user;
 
-                // 🔁 Update profile with displayName and photoURL
+                //Update profile in Firebase
                 updateProfile(currentUser, {
                     displayName: name,
                     photoURL: image || "https://i.ibb.co/4pDNDk1/avatar.png"
-                }).then(() => {
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: "User Registered Successfully!",
-                        showConfirmButton: false,
-                        timer: 1500
+                })
+                    .then(() => {
+                        //Send user data to your backend
+                        const savedUser = {
+                            name: name,
+                            email: email,
+                            image: image || "https://i.ibb.co/4pDNDk1/avatar.png"
+                        };
+
+                        fetch("http://localhost:5000/users", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(savedUser)
+                        })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.insertedId || data.message === 'user already exists') {
+                                    Swal.fire({
+                                        position: "center",
+                                        icon: "success",
+                                        title: "User Registered Successfully!",
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+                                    e.target.reset();
+                                    navigate("/");
+                                }
+                            });
+                    })
+                    .catch(err => {
+                        console.error("Profile update error:", err);
                     });
-                    e.target.reset();
-                    navigate("/"); // You can change this to any route you want
-                }).catch(err => {
-                    console.error("Profile update error:", err);
-                });
             })
             .catch((error) => {
                 console.error("Registration error:", error.message);
                 Swal.fire("Error", error.message, "error");
             });
     }
+
 
     return (
         <div className="hero">
