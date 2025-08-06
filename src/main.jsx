@@ -67,7 +67,7 @@ const router = createBrowserRouter([
         element: <PrivateRoute><MyEvents></MyEvents></PrivateRoute>,
       },
       {
-        path: "allusers",
+        path: "users",
         element: <PrivateRoute><AllUsers></AllUsers></PrivateRoute>,
       },
       {

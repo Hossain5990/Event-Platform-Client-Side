@@ -36,10 +36,24 @@ const BookTickets = () => {
         setForm(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async e => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        //Check if already booked
+        const requestedQty = parseInt(form.quantity);
+        const availableQty = parseInt(tour.ticketQuantity);
+
+        // Check if requested quantity is more than available
+        if (requestedQty > availableQty) {
+            Swal.fire({
+                icon: "error",
+                title: "Not Enough Tickets!",
+                text: `Only ${availableQty} ticket${availableQty > 1 ? "s" : ""} are available.`,
+                confirmButtonText: "OK"
+            });
+            return;
+        }
+
+        // Check if already booked
         const checkRes = await fetch(`http://localhost:5000/bookTickets/check?email=${form.email}&tourId=${tour._id}`);
         const checkData = await checkRes.json();
 
@@ -50,35 +64,31 @@ const BookTickets = () => {
                 text: "You have already booked this tour.",
                 confirmButtonText: "Go to All Tours",
             }).then(() => {
-                navigate("/alltours"); 
+                navigate("/alltours");
             });
-
-            return; 
+            return;
         }
-        //Proceed to book if not already booked
+
+        // Proceed to book
         const bookingData = {
             ...form,
             tourId: tour._id,
             image: tour.image,
             tourTitle: tour.title,
             location: tour.location,
-            totalPrice: parseInt(form.quantity) * parseInt(tour.price),
+            totalPrice: requestedQty * parseInt(tour.price),
             tourDate: tour.date,
             bookingDate: new Date().toISOString(),
-
+            organizerEmail: tour.organizerEmail,
         };
 
         fetch('http://localhost:5000/bookTickets', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(bookingData),
         })
             .then(res => res.json())
             .then(data => {
-                // success
-                console.log(data)
                 if (data.insertedId) {
                     Swal.fire({
                         position: "center",
@@ -87,8 +97,7 @@ const BookTickets = () => {
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    navigate("/alltours");
-
+                    navigate("/alltours", { state: { refresh: true } });
                 }
             })
             .catch(error => {
@@ -96,11 +105,10 @@ const BookTickets = () => {
                     icon: "error",
                     title: "Oops...",
                     text: "Something went wrong!",
-
                 });
             });
-
     };
+
 
     if (!tour) return <p className="text-center p-10">Loading tour info...</p>;
 
@@ -129,7 +137,6 @@ const BookTickets = () => {
                     type="number"
                     name="quantity"
                     min="1"
-                    max={tour.ticketQuantity}
                     value={form.quantity}
                     onChange={handleChange}
                     className="w-full p-2 border rounded text-base font-medium"
@@ -140,9 +147,8 @@ const BookTickets = () => {
                     Total Price: {form.quantity * tour.price} BDT
                 </p>
 
-                <button type="submit" className="bg-yellow-500 text-white px-4 py-2 text-xl font-bold rounded hover:bg-yellow-600">
-                    Confirm Booking
-                </button>
+                <button type="submit" className="bg-yellow-500 hover:bg-yellow-600text-black font-semibold px-4 py-2 text-xl rounded" >Confirm Booking</button>
+
             </form>
         </div>
     );

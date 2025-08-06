@@ -18,7 +18,7 @@ const Dashboard = () => {
     }, [user]);
 
     return (
-        <div className="max-w-3xl mx-auto px-4 py-12">
+        <div className="max-w-3xl mx-auto px-4 py-4">
             <h1 className="text-4xl font-bold text-center mb-8 text-indigo-600">👤 User Dashboard</h1>
 
             <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center text-center">

@@ -1,21 +1,27 @@
-
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const AllTours = () => {
   const [tours, setTours] = useState([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const location = useLocation();
 
   useEffect(() => {
     fetch("http://localhost:5000/tours")
       .then((res) => res.json())
       .then((data) => setTours(data));
-  }, []);
+  }, [refreshKey]); 
+
+  
+    useEffect(() => {
+    if (location.state?.refresh) {
+      setRefreshKey(prev => prev + 1);
+    }
+  }, [location.state]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
-    
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6" >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
         {tours.map((tour) => (
           <div
             key={tour._id}
@@ -39,12 +45,19 @@ const AllTours = () => {
                 <p><strong>Tickets:</strong> {tour.ticketQuantity}</p>
                 <p><strong>Price:</strong> {tour.price} BDT</p>
               </div>
-              <Link
-                to={`/tours/${tour._id}`}
-                className="mt-2 bg-yellow-500 text-black font-semibold py-2 text-center rounded hover:bg-yellow-600"
-              >
-                View Details
-              </Link>
+
+              {tour.ticketQuantity <= 0 ? (
+                <button className="bg-gray-400 text-white font-semibold py-2 text-center rounded cursor-not-allowed" disabled>
+                  Sold Out
+                </button>
+              ) : (
+                <Link
+                  to={`/tours/${tour._id}`}
+                  className="mt-2 bg-yellow-500 text-black font-semibold py-2 text-center rounded hover:bg-yellow-600"
+                >
+                  View Details
+                </Link>
+              )}
             </div>
           </div>
         ))}

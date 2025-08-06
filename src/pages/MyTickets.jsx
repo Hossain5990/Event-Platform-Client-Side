@@ -1,84 +1,3 @@
-// import { useContext, useEffect, useState } from "react";
-// import { AuthContext } from "../Provider/AuthProvider";
-
-// const MyTickets = () => {
-//   const { user } = useContext(AuthContext);
-//   const [bookings, setBookings] = useState([]);
-
-//   useEffect(() => {
-//     fetch(`http://localhost:5000/bookTickets?email=${user.email}`)
-//       .then((res) => res.json())
-//       .then((data) => setBookings(data));
-//   }, [user.email]);
-
-//   return (
-//     <div className="max-w-6xl mx-auto px-4 py-10">
-//       <h2 className="text-3xl font-bold mb-6 text-center">🎫 My Tickets</h2>
-//       <p className="mb-4 text-gray-600 text-xl font-semibold text-center">Total Booked: {bookings.length}</p>
-
-
-//       <div className="space-y-4">
-//         {bookings.map((booking, index) => (
-//           <div key={booking._id} className="bg-white shadow p-4 rounded-lg md:flex gap-4 items-center">
-//             <div>
-//               <img
-//                 src={booking.image}
-//                 alt=""
-//                 className="w-full h-60 object-cover rounded-lg shadow mb-2"
-//               />
-//             </div>
-
-//             <div>
-//               <h3 className="text-xl font-bold mb-2">
-//                 {index + 1}. {booking.tourTitle}
-//               </h3>
-//               <p><strong>Location:</strong> {booking.location}</p>
-//               <p><strong>Tour Date:</strong> {booking.tourDate}</p>
-//               <p><strong>Tickets:</strong> {booking.quantity}</p>
-//               <p><strong>Price:</strong> {booking.totalPrice} BDT</p>
-//               <p><strong>Booked By:</strong> {booking.email}</p>
-//               <p><strong>Booking Date:</strong> {booking.bookingDate}</p>
-//               <div className="flex gap-2 mt-2">
-
-//               <button
-//                 className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded font-bold"
-//                 onClick={() => handleUpdate(booking)}
-//               >
-//                 Update
-//               </button>
-//               <button
-//                 className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded font-bold"
-//                 onClick={() => handleCancel(booking._id)}
-//               >
-//                 Cancel
-//               </button>
-//             </div>
-//             </div>
-
-//             {/* <div className="flex flex-col gap-2 ml-4">
-
-//               <button
-//                 className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded font-bold"
-//                 onClick={() => handleUpdate(booking)}
-//               >
-//                 Update
-//               </button>
-//               <button
-//                 className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded font-bold"
-//                 onClick={() => handleCancel(booking._id)}
-//               >
-//                 Cancel
-//               </button>
-//             </div> */}
-//           </div>
-//         ))}
-//       </div>
-
-//     </div>
-//   );
-// };
-
-// export default MyTickets;
 
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
@@ -96,7 +15,7 @@ const MyTickets = () => {
       .then(data => setBookings(data));
   }, [user.email]);
 
-  // ✅ Cancel Booking
+  // Cancel Booking
   const handleCancel = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -119,13 +38,13 @@ const MyTickets = () => {
     });
   };
 
-  // ✅ Enable edit form
+  // Enable edit form
   const handleUpdate = (booking) => {
     setEditingId(booking._id);
     setEditedQuantity(booking.quantity);
   };
 
-  // ✅ Save update
+  // Save update
   const handleSave = (booking) => {
     const unitPrice = booking.totalPrice / booking.quantity;
 
@@ -152,14 +71,15 @@ const MyTickets = () => {
         );
         setEditingId(null);
         Swal.fire("Updated!", "Ticket quantity and price updated.", "success");
+         
       });
   };
 
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
+    <div className="max-w-6xl mx-auto px-4 my-4">
       
-      <p className="mb-4 md:mb-6 text-gray-600 text-2xl font-bold text-center">Total Booked: {bookings.length}</p>
+      <p className="mb-4 md:mb-6 text-gray-600 text-3xl font-bold text-center">Total Booked: {bookings.length}</p>
 
       <div className="space-y-4">
         {bookings.map((booking, index) => (
@@ -206,13 +126,13 @@ const MyTickets = () => {
                   <div className="flex gap-2 mt-2">
 
                     <button
-                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded font-bold"
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded font-semibold"
                       onClick={() => handleUpdate(booking)}
                     >
                       Update
                     </button>
                     <button
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded font-bold"
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded font-semibold"
                       onClick={() => handleCancel(booking._id)}
                     >
                       Cancel

@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
 import { auth } from '../Firebase/firebase.config';
+import axios from 'axios';
 
 
 
@@ -32,23 +33,37 @@ const AuthProvider = ({ children }) => {
         return signInWithPopup(auth, googleProvider);
     }
 
+   
     useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, currentUser => {
+            console.log(currentUser);
+            setUser(currentUser);
 
-        const unSubscribe = onAuthStateChanged(auth, currentUser => {
-            console.log(currentUser)
-            setUser(currentUser)
-            setLoading(false)
+            if (currentUser) {
+                const userInfo = { email: currentUser.email };
 
-        })
+                axios.post("http://localhost:5000/jwt", userInfo, {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(res => {
+                        localStorage.setItem("access-token", res.data.token);
+                        setLoading(false);
+                    })
+                    .catch(error => {
+                        console.error("JWT fetch error:", error);
+                        setLoading(false);
+                    });
+            } else {
+                localStorage.removeItem("access-token");
+                setLoading(false);
+            }
+        });
 
-        return () => {
-            unSubscribe();
-        }
+        return () => unsubscribe();
+    }, []);
 
-
-
-
-    }, [])
 
 
     const authInfo = {

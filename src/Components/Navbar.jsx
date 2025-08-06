@@ -1,12 +1,14 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../Provider/AuthProvider';
 import { PiRocketLaunch, PiSignOutBold } from "react-icons/pi";
 import Swal from 'sweetalert2';
+import useAdmin from '../hooks/useAdmin';
 
 
 const Navbar = () => {
     const { user, signOutUser } = useContext(AuthContext);
+    const [isAdmin, isAdminLoading] = useAdmin();
 
 
     const handleSignOut = () => {
@@ -40,13 +42,23 @@ const Navbar = () => {
         <li><NavLink className={navLinkClass} to='/'>Home</NavLink></li>
         <li><NavLink className={navLinkClass} to='/alltours'>All Tours</NavLink></li>
         {
-            user &&
-            <>
-                <li><NavLink className={navLinkClass} to='/mytickets'>My Tickets</NavLink></li>
-                <li><NavLink className={navLinkClass} to='/dashboard'>Dashboard</NavLink></li>
-            </>
-
+            user && !isAdminLoading && (
+                isAdmin ? (
+                    <>
+                        <li><NavLink className={navLinkClass} to='/addevents'>Add Events</NavLink></li>
+                        <li><NavLink className={navLinkClass} to='/myevents'>My Events</NavLink></li>
+                        <li><NavLink className={navLinkClass} to='/users'>All Users</NavLink></li>
+                        <li><NavLink className={navLinkClass} to='/admindashboard'>Dashboard</NavLink></li>
+                    </>
+                ) : (
+                    <>
+                        <li><NavLink className={navLinkClass} to='/mytickets'>My Tickets</NavLink></li>
+                        <li><NavLink className={navLinkClass} to='/dashboard'>Dashboard</NavLink></li>
+                    </>
+                )
+            )
         }
+
 
     </>
 

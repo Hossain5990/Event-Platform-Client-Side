@@ -9,7 +9,7 @@ const PopularTours = () => {
       .then(res => res.json())
       .then(data => {
         // Filter only tours where category is "Popular"
-        const popularTours = data.filter(tour => tour.category === 'Popular');
+        const popularTours = data.filter(tour => tour.category === 'popular');
         setTours(popularTours);
       })
       .catch(err => console.error('Error loading tours:', err));
