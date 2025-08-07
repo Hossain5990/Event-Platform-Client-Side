@@ -20,6 +20,8 @@ import MyEvents from './pages/MyEvents';
 import AdminDashboard from './pages/AdminDashboard';
 import BookTickets from './Components/BookTickets';
 import MyTickets from './pages/MyTickets';
+import Payment from './Components/Payment';
+import PaymentHistory from './pages/PaymentHistory';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -53,6 +55,14 @@ const router = createBrowserRouter([
       {
         path: "mytickets",
         element: <PrivateRoute><MyTickets></MyTickets></PrivateRoute>,
+      },
+          {
+        path: "payment",
+        element: <PrivateRoute><Payment></Payment></PrivateRoute>,
+      },
+          {
+        path: "paymenthistory",
+        element: <PrivateRoute><PaymentHistory></PaymentHistory></PrivateRoute>,
       },
       {
         path: "alltours",

@@ -54,6 +54,7 @@ const Navbar = () => {
                     <>
                         <li><NavLink className={navLinkClass} to='/mytickets'>My Tickets</NavLink></li>
                         <li><NavLink className={navLinkClass} to='/dashboard'>Dashboard</NavLink></li>
+                        <li><NavLink className={navLinkClass} to='/paymenthistory'>Payment History</NavLink></li>
                     </>
                 )
             )
@@ -96,7 +97,7 @@ const Navbar = () => {
                 {
                     user ?
                         <>
-                            <a className="hidden md:flex btn bg-yellow-500 text-white font-semibold md:text-lg">{user?.email}</a>
+                            {/* <a className="hidden md:flex btn bg-yellow-500 text-white font-semibold md:text-lg">{user?.email}</a> */}
                             <button onClick={handleSignOut} className="btn bg-yellow-500 text-white font-semibold md:text-lg items-center">Sign Out <PiSignOutBold /></button>
                         </>
                         :

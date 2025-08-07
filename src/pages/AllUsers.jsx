@@ -56,7 +56,7 @@ const AllUsers = () => {
 
     return (
         <div>
-            <h2 className="text-3xl font-bold text-center">Total Users: {users.length}</h2>
+            <h2 className="my-4 text-gray-600 text-3xl font-bold text-center">Total Users: {users.length}</h2>
             {loading ? (
                 <p className="text-center">Loading...</p>
             ) : (

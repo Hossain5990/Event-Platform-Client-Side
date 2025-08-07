@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 const MyTickets = () => {
   const { user } = useContext(AuthContext);
@@ -71,15 +72,28 @@ const MyTickets = () => {
         );
         setEditingId(null);
         Swal.fire("Updated!", "Ticket quantity and price updated.", "success");
-         
+
       });
   };
 
 
   return (
     <div className="max-w-6xl mx-auto px-4 my-4">
-      
+
       <p className="mb-4 md:mb-6 text-gray-600 text-3xl font-bold text-center">Total Booked: {bookings.length}</p>
+
+      {/* <div className="md:flex justify-between my-4">
+        <h2 className="mb-2 text-gray-600 text-3xl font-bold text-center">Total Booked: {bookings.length}</h2>
+        <h2 className="mb-2 text-gray-600 text-3xl font-bold text-center">Total Price: {bookings.totalPrice}</h2>
+        <div className="text-center">
+          {bookings.length ? <Link to="/payment">
+            <button className="btn btn-primary">Pay</button>
+          </Link> :
+            <button disabled className="btn btn-primary">Pay</button>
+          }
+        </div>
+
+      </div> */}
 
       <div className="space-y-4">
         {bookings.map((booking, index) => (
