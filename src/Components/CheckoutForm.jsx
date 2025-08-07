@@ -1,3 +1,4 @@
+
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import Swal from "sweetalert2";
@@ -12,49 +13,68 @@ const CheckoutForm = ({ bookingData, tourId, onSuccess }) => {
         setProcessing(true);
 
         try {
-            // Step 1: Create Payment Intent
+            //Create Payment Intent
             const res = await fetch("http://localhost:5000/create-payment-intent", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ price: bookingData.totalPrice }),
             });
 
-            if (!res.ok) {
-                const text = await res.text();
-                console.error("Payment intent response not OK:", text);
-                throw new Error("Failed to create payment intent");
-            }
-
             const paymentData = await res.json();
 
             if (!paymentData.clientSecret) {
-                throw new Error("No clientSecret received from server");
+                throw new Error("Payment creation failed");
             }
 
             const clientSecret = paymentData.clientSecret;
-
-            // Step 2: Confirm payment with Stripe
             const card = elements.getElement(CardElement);
+
+            //Confirm payment with Stripe
             const paymentResult = await stripe.confirmCardPayment(clientSecret, {
                 payment_method: { card },
             });
 
-            if (paymentResult.error) {
-                throw new Error(paymentResult.error.message);
-            }
+            if (paymentResult.error) throw new Error(paymentResult.error.message);
 
-            if (paymentResult.paymentIntent?.status === "succeeded") {
-                // Step 3: Save booking in database
+            const paymentIntent = paymentResult.paymentIntent;
+
+            if (paymentIntent?.status === "succeeded") {
+                //Save booking with Stripe data
                 const saveRes = await fetch("http://localhost:5000/bookTickets", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(bookingData),
+                    body: JSON.stringify({
+                        ...bookingData,
+                        paymentIntentId: paymentIntent.id,
+                        stripeAmount: paymentIntent.amount,
+                        currency: paymentIntent.currency
+                    }),
                 });
 
                 const result = await saveRes.json();
+
                 if (result.insertedId) {
+
+                    await fetch('http://localhost:5000/payments', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // add authorization header if needed
+                        },
+                        body: JSON.stringify({
+                            email: bookingData.email,
+                            tourTitle: bookingData.tourTitle,
+                            tourId: bookingData.tourId,
+                            quantity: bookingData.quantity,
+                            totalPrice: bookingData.totalPrice,
+                            transactionId: paymentIntent.id,
+                            bookingId: result.insertedId,
+                            status: "paid",
+                            date: new Date()
+                        })
+                    });
                     Swal.fire("Success", "Ticket booked successfully!", "success");
-                    onSuccess(); // Callback for redirect or refresh
+                    onSuccess();
                 } else {
                     throw new Error("Booking save failed");
                 }

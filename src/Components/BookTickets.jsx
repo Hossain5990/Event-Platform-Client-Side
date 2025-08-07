@@ -52,6 +52,7 @@ const BookTickets = () => {
             return;
         }
 
+        // Check if user already booked
         const checkRes = await fetch(`http://localhost:5000/bookTickets/check?email=${form.email}&tourId=${tour._id}`);
         const checkData = await checkRes.json();
 
@@ -65,6 +66,7 @@ const BookTickets = () => {
             return;
         }
 
+        // Prepare booking data for payment
         const totalPrice = requestedQty * parseInt(tour.price);
         const booking = {
             ...form,
@@ -72,13 +74,15 @@ const BookTickets = () => {
             image: tour.image,
             tourTitle: tour.title,
             location: tour.location,
-            totalPrice,
+            totalPrice, 
+            quantity: requestedQty,
             tourDate: tour.date,
             bookingDate: new Date().toISOString(),
             organizerEmail: tour.organizerEmail,
+            
         };
 
-        setBookingData(booking); // Pass this to CheckoutForm
+        setBookingData(booking);
     };
 
     if (!tour) return <p className="text-center p-10">Loading tour info...</p>;
@@ -137,4 +141,3 @@ const BookTickets = () => {
 };
 
 export default BookTickets;
-

@@ -2,10 +2,11 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const MyTickets = () => {
   const { user } = useContext(AuthContext);
+ const axiosSecure = useAxiosSecure();
   const [bookings, setBookings] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editedQuantity, setEditedQuantity] = useState(1);
@@ -17,27 +18,77 @@ const MyTickets = () => {
   }, [user.email]);
 
   // Cancel Booking
-  const handleCancel = (id) => {
-    Swal.fire({
+  // const handleCancel = (id) => {
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "You want to cancel this booking?",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Yes, cancel it!",
+  //     cancelButtonText: "No"
+  //   }).then(result => {
+  //     if (result.isConfirmed) {
+  //       fetch(`http://localhost:5000/bookTickets/${id}`, {
+  //         method: "DELETE",
+  //       })
+  //         .then(res => res.json())
+  //         .then(() => {
+  //           setBookings(prev => prev.filter(b => b._id !== id));
+  //           Swal.fire("Cancelled!", "Your booking has been deleted.", "success");
+  //         });
+  //     }
+  //   });
+  // };
+
+  const handleCancel = async (booking) => {
+    const confirm = await Swal.fire({
       title: "Are you sure?",
-      text: "You want to cancel this booking?",
+      text: "This will cancel the ticket and refund your payment.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, cancel it!",
-      cancelButtonText: "No"
-    }).then(result => {
-      if (result.isConfirmed) {
-        fetch(`http://localhost:5000/bookTickets/${id}`, {
-          method: "DELETE",
-        })
-          .then(res => res.json())
-          .then(() => {
-            setBookings(prev => prev.filter(b => b._id !== id));
-            Swal.fire("Cancelled!", "Your booking has been deleted.", "success");
-          });
-      }
+      confirmButtonText: "Yes, Cancel & Refund",
     });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      if (!booking.paymentIntentId || !booking.totalPrice) {
+        throw new Error("Missing payment information for refund.");
+      }
+
+      // Convert BDT to USD cents
+      const exchangeRate = 110; // Adjust based on your actual conversion
+      const usdAmount = booking.totalPrice / exchangeRate;
+      const amountInCents = Math.round(usdAmount * 100);
+
+      if (amountInCents < 1) {
+        throw new Error("Refund amount is too small after conversion.");
+      }
+
+      // Refund via backend
+      const refundRes = await axiosSecure.post("/refund", {
+        paymentIntentId: booking.paymentIntentId,
+        amount: amountInCents,
+      });
+
+      if (!refundRes.data.success) {
+        throw new Error(refundRes.data.error || "Refund failed.");
+      }
+
+      // Delete booking from DB
+      await axiosSecure.delete(`/bookTickets/${booking._id}`);
+
+      // Remove from UI
+      setBookings((prev) => prev.filter((b) => b._id !== booking._id));
+
+      Swal.fire("Cancelled", "Booking canceled and refund processed.", "success");
+    } catch (error) {
+      console.error("Cancel error:", error);
+      Swal.fire("Error", error.message, "error");
+    }
   };
+
+
 
   // Enable edit form
   const handleUpdate = (booking) => {
@@ -81,20 +132,6 @@ const MyTickets = () => {
     <div className="max-w-6xl mx-auto px-4 my-4">
 
       <p className="mb-4 md:mb-6 text-gray-600 text-3xl font-bold text-center">Total Booked: {bookings.length}</p>
-
-      {/* <div className="md:flex justify-between my-4">
-        <h2 className="mb-2 text-gray-600 text-3xl font-bold text-center">Total Booked: {bookings.length}</h2>
-        <h2 className="mb-2 text-gray-600 text-3xl font-bold text-center">Total Price: {bookings.totalPrice}</h2>
-        <div className="text-center">
-          {bookings.length ? <Link to="/payment">
-            <button className="btn btn-primary">Pay</button>
-          </Link> :
-            <button disabled className="btn btn-primary">Pay</button>
-          }
-        </div>
-
-      </div> */}
-
       <div className="space-y-4">
         {bookings.map((booking, index) => (
           <div key={booking._id} className="bg-white shadow p-4 rounded-lg md:flex gap-4 items-center">
@@ -106,7 +143,7 @@ const MyTickets = () => {
               <h3 className="text-xl font-bold">{index + 1}. {booking.tourTitle}</h3>
               <p><strong>Location:</strong> {booking.location}</p>
               <p><strong>Tour Date:</strong> {booking.tourDate}</p>
-              <p><strong>Unit Price:</strong> {booking.price} BDT</p>
+              {/* <p><strong>Unit Price:</strong> {booking.price} BDT</p> */}
               <p><strong>Booked By:</strong> {booking.email}</p>
               <p><strong>Booking Date:</strong> {booking.bookingDate}</p>
               <p><strong>Tickets:</strong> {booking.quantity}</p>
@@ -147,7 +184,7 @@ const MyTickets = () => {
                     </button>
                     <button
                       className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded font-semibold"
-                      onClick={() => handleCancel(booking._id)}
+                      onClick={() => handleCancel(booking)}
                     >
                       Cancel
                     </button>
