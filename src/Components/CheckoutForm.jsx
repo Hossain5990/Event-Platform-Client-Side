@@ -68,6 +68,7 @@ const CheckoutForm = ({ bookingData, tourId, onSuccess }) => {
                             quantity: bookingData.quantity,
                             totalPrice: bookingData.totalPrice,
                             transactionId: paymentIntent.id,
+                            organizerEmail:  bookingData.organizerEmail,
                             bookingId: result.insertedId,
                             status: "paid",
                             date: new Date()

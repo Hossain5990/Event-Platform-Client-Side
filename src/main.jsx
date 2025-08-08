@@ -22,6 +22,7 @@ import BookTickets from './Components/BookTickets';
 import MyTickets from './pages/MyTickets';
 import Payment from './Components/Payment';
 import PaymentHistory from './pages/PaymentHistory';
+import Bookings from './pages/Bookings';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
       {
         path: "users",
         element: <PrivateRoute><AllUsers></AllUsers></PrivateRoute>,
+      },
+      {
+        path: "bookings",
+        element: <PrivateRoute><Bookings></Bookings></PrivateRoute>,
       },
       {
         path: "admindashboard",

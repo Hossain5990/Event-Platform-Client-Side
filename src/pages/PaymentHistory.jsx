@@ -47,7 +47,7 @@ const PaymentHistory = () => {
                             <td className="border px-4 py-2">{p.quantity}</td>
                             <td className="border px-4 py-2">{p.totalPrice}</td>
                             <td className="border px-4 py-2">{p.transactionId}</td>
-                            <td className="border px-4 py-2">{p.status === "cancelled & refunded" ? (
+                            <td className="border px-4 py-2">{p.status === "cancel" ? (
                                 <span className="text-red-500 font-semibold">Cancelled -<span className="text-blue-500 font-semibold"> Refunded</span></span>
                             ) : (
                                 <span className="text-green-600 font-semibold">Paid</span>

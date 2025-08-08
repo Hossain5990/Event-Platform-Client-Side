@@ -48,6 +48,7 @@ const Navbar = () => {
                         <li><NavLink className={navLinkClass} to='/addevents'>Add Events</NavLink></li>
                         <li><NavLink className={navLinkClass} to='/myevents'>My Events</NavLink></li>
                         <li><NavLink className={navLinkClass} to='/users'>All Users</NavLink></li>
+                        <li><NavLink className={navLinkClass} to='/bookings'>Bookings</NavLink></li>
                         <li><NavLink className={navLinkClass} to='/admindashboard'>Dashboard</NavLink></li>
                     </>
                 ) : (
