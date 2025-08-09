@@ -1,4 +1,5 @@
 import React from 'react';
+import { FiMapPin } from 'react-icons/fi';
 
 const Choose = () => {
     return (
@@ -16,7 +17,10 @@ const Choose = () => {
                             <p className="text-gray-700">Pay safely using Stripe, PayPal or bKash sandbox gateways.</p>
                         </div>
                         <div>
-                            <h4 className="text-xl font-semibold mb-2">📍 Map Integration</h4>
+                            <div className='flex items-center'>
+                                <p className="text-xl font-semibold mb-2 " ><FiMapPin /> </p>
+                            <h4 className="text-xl font-semibold mb-2">Map Integration</h4>
+                            </div>
                             <p className="text-gray-700">View exact tour locations via Google Maps integration.</p>
                         </div>
                     </div>

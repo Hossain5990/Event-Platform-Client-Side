@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
+import { TbCoinTakaFilled } from "react-icons/tb";
 
 const AdminDashboard = () => {
     const { user } = useContext(AuthContext);
@@ -41,7 +42,7 @@ const AdminDashboard = () => {
                             <p className="text-2xl font-bold">{stats.totalTickets}</p>
                         </div>
                         <div className="p-4 bg-green-100 rounded">
-                            <p className="text-lg font-semibold text-green-700">💰 Total Revenue</p>
+                            <p className="text-lg font-semibold text-green-700 flex items-center"><TbCoinTakaFilled /> Total Revenue</p>
                             <p className="text-2xl font-bold">{stats.totalRevenue} BDT</p>
                         </div>
                     </div>

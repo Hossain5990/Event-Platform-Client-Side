@@ -1,23 +1,11 @@
 
-// import { useState } from 'react';
+
 import { useContext } from 'react';
 import Swal from 'sweetalert2';
 import { AuthContext } from "../Provider/AuthProvider";
 
 const AddEvents = () => {
     const { user } = useContext(AuthContext);
-        // const [ticketTypes, setTicketTypes] = useState([{ type: '', price: '', quantity: '' }]);
-
-    // const handleAddTicketType = () => {
-    //     setTicketTypes([...ticketTypes, { type: '', price: '', quantity: '' }]);
-    // };
-
-    // const handleTicketChange = (index, field, value) => {
-    //     const newTypes = [...ticketTypes];
-    //     newTypes[index][field] = value;
-    //     setTicketTypes(newTypes);
-    // };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const form = e.target;
@@ -71,42 +59,7 @@ const AddEvents = () => {
                 <input name="date" type="datetime-local" className="input input-bordered w-full" required />
                 <input name="organizer" placeholder="Organizer Name" className="input input-bordered w-full" required />
                 <input name="ticketQuantity" type="number" placeholder="Total Tickets" className="input input-bordered w-full" required />
-                <input name="category" placeholder="Category (Popular, Sports, etc)" className="input input-bordered w-full" required />
-
-                {/* <div className="space-y-2">
-                    <label className="font-semibold">Ticket Types (VIP, Regular):</label>
-                    {ticketTypes.map((ticket, index) => (
-                        <div key={index} className="flex gap-2">
-                            <input
-                                placeholder="Type"
-                                value={ticket.type}
-                                onChange={e => handleTicketChange(index, 'type', e.target.value)}
-                                className="input input-bordered w-1/3"
-                                required
-                            />
-                            <input
-                                placeholder="Price"
-                                type="number"
-                                value={ticket.price}
-                                onChange={e => handleTicketChange(index, 'price', e.target.value)}
-                                className="input input-bordered w-1/3"
-                                required
-                            />
-                            <input
-                                placeholder="Quantity"
-                                type="number"
-                                value={ticket.quantity}
-                                onChange={e => handleTicketChange(index, 'quantity', e.target.value)}
-                                className="input input-bordered w-1/3"
-                                required
-                            />
-                        </div>
-                    ))}
-                    <button type="button" onClick={handleAddTicketType} className="btn btn-outline btn-sm mt-2">
-                        ➕ Add Ticket Type
-                    </button>
-                </div> */}
-
+                <input name="category" placeholder="Category (Popular, Sports, etc)" className="input input-bordered w-full" required />        
                 <button className="btn btn-primary w-full mt-4">Submit Event</button>
             </form>
         </div>
@@ -114,3 +67,5 @@ const AddEvents = () => {
 };
 
 export default AddEvents;
+
+

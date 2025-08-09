@@ -17,28 +17,6 @@ const MyTickets = () => {
       .then(data => setBookings(data));
   }, [user.email]);
 
-  // Cancel Booking
-  // const handleCancel = (id) => {
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "You want to cancel this booking?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonText: "Yes, cancel it!",
-  //     cancelButtonText: "No"
-  //   }).then(result => {
-  //     if (result.isConfirmed) {
-  //       fetch(`http://localhost:5000/bookTickets/${id}`, {
-  //         method: "DELETE",
-  //       })
-  //         .then(res => res.json())
-  //         .then(() => {
-  //           setBookings(prev => prev.filter(b => b._id !== id));
-  //           Swal.fire("Cancelled!", "Your booking has been deleted.", "success");
-  //         });
-  //     }
-  //   });
-  // };
 
   const handleCancel = async (booking) => {
     const confirm = await Swal.fire({
@@ -57,7 +35,7 @@ const MyTickets = () => {
       }
 
       // Convert BDT to USD cents
-      const exchangeRate = 110; // Adjust based on your actual conversion
+      const exchangeRate = 110; 
       const usdAmount = booking.totalPrice / exchangeRate;
       const amountInCents = Math.round(usdAmount * 100);
 
@@ -127,7 +105,7 @@ const MyTickets = () => {
       });
   };
 
-
+  if (bookings.length === 0) return <p className="mb-4 md:mb-6 text-gray-600 text-3xl font-bold text-center">No Bookings.....</p>;
   return (
     <div className="max-w-6xl mx-auto px-4 my-4">
 
@@ -174,19 +152,19 @@ const MyTickets = () => {
                     </div>
                   </>
                 ) : (
-                  <div className="flex gap-2 mt-2">
-
+                  <div className="flex gap-2 mt-2 justify-end">
+{/* 
                     <button
                       className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded font-semibold"
                       onClick={() => handleUpdate(booking)}
                     >
                       Update
-                    </button>
+                    </button> */}
                     <button
                       className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded font-semibold"
                       onClick={() => handleCancel(booking)}
                     >
-                      Cancel
+                      Cancel Booking
                     </button>
                   </div>
                 )}

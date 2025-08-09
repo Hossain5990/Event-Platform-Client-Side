@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
+import { TbCoinTakaFilled } from "react-icons/tb";
 
 const Dashboard = () => {
     const { user } = useContext(AuthContext);
@@ -45,7 +46,7 @@ const Dashboard = () => {
                             <p className="text-2xl font-bold">{bookingStats.total}</p>
                         </div>
                         <div className="p-4 bg-green-100 rounded">
-                            <p className="text-lg font-semibold text-green-700">💰 Total Spent</p>
+                            <p className="text-lg font-semibold text-green-700 flex items-center"><TbCoinTakaFilled /> Total Spent</p>
                             <p className="text-2xl font-bold">{bookingStats.amount} BDT</p>
                         </div>
                     </div>
