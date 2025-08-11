@@ -1,17 +1,21 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const PaymentHistory = () => {
     const { user } = useContext(AuthContext);
+    const axiosSecure = useAxiosSecure();
     const [payments, setPayments] = useState([]);
     const [loading, setLoading] = useState(true);
 
+ 
+
     useEffect(() => {
         if (user?.email) {
-            fetch(`http://localhost:5000/payments?email=${user.email}`)
-                .then((res) => res.json())
-                .then((data) => {
-                    setPayments(data);
+            axiosSecure
+                .get(`/payments?email=${user.email}`)
+                .then((res) => {
+                    setPayments(res.data);
                     setLoading(false);
                 })
                 .catch((error) => {
@@ -19,7 +23,7 @@ const PaymentHistory = () => {
                     setLoading(false);
                 });
         }
-    }, [user]);
+    }, [user, axiosSecure]);
 
     if (loading) return <p className="mb-4 md:mb-6 text-gray-600 text-3xl font-bold text-center">Loading payment history...</p>;
 
@@ -27,7 +31,7 @@ const PaymentHistory = () => {
 
     return (
         <div className="p-6">
-            {/* <h2 className="mb-4 md:mb-6 text-gray-600 text-3xl font-bold text-center">My Payment History</h2> */}
+           
             <div className="overflow-x-auto">
                 <table className="w-full border-collapse border">
                     <thead>

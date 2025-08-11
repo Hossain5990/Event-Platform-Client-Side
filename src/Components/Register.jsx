@@ -30,13 +30,13 @@ const Register = () => {
             .then((result) => {
                 const currentUser = result.user;
 
-                //Update profile in Firebase
+                //Update profile
                 updateProfile(currentUser, {
                     displayName: name,
                     photoURL: image || "https://i.ibb.co/4pDNDk1/avatar.png"
                 })
                     .then(() => {
-                        //Send user data to your backend
+                        //Send user data to backend
                         const savedUser = {
                             name: name,
                             email: email,

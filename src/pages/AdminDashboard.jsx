@@ -1,19 +1,32 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 import { TbCoinTakaFilled } from "react-icons/tb";
 
 const AdminDashboard = () => {
     const { user } = useContext(AuthContext);
+    const axiosSecure = useAxiosSecure();
     const [stats, setStats] = useState({ totalTickets: 0, totalRevenue: 0 });
 
     useEffect(() => {
         if (user?.email) {
-            fetch(`http://localhost:5000/adminTicketStats?email=${user.email}`)
-                .then((res) => res.json())
-                .then((data) => setStats(data))
-                .catch(err => console.error("Stats fetch error:", err));
+            axiosSecure
+                .get(`/adminTicketStats?email=${user.email}`)
+                .then((res) => {
+                    setStats(res.data);
+                    setError(null);
+                })
+                .catch((err) => {
+                    console.error("Stats fetch error:", err);
+                    if (err.response?.status === 401 || err.response?.status === 403) {
+                        setError("Unauthorized access - please login as admin");
+                    } else {
+                        setError("Failed to fetch stats");
+                    }
+                    setStats({ totalTickets: 0, totalRevenue: 0 });
+                });
         }
-    }, [user?.email]);
+    }, [user?.email, axiosSecure]);
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-4">

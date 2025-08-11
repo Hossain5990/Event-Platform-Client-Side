@@ -1,22 +1,25 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
 import { TbCoinTakaFilled } from "react-icons/tb";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const Dashboard = () => {
     const { user } = useContext(AuthContext);
+    const axiosSecure = useAxiosSecure();
     const [bookingStats, setBookingStats] = useState({ total: 0, amount: 0 });
 
     useEffect(() => {
         if (user?.email) {
-            fetch(`http://localhost:5000/bookTickets?email=${user.email}`)
-                .then((res) => res.json())
-                .then((data) => {
-                    const total = data.reduce((acc, curr) => acc + parseInt(curr.quantity), 0);
-                    const amount = data.reduce((acc, curr) => acc + parseInt(curr.totalPrice), 0);
+            axiosSecure
+                .get(`/bookTickets?email=${user.email}`)
+                .then((res) => {
+                    const total = res.data.reduce((acc, curr) => acc + parseInt(curr.quantity), 0);
+                    const amount = res.data.reduce((acc, curr) => acc + parseInt(curr.totalPrice), 0);
                     setBookingStats({ total, amount });
-                });
+                })
+                .catch((err) => console.error(err));
         }
-    }, [user]);
+    }, [user?.email, axiosSecure]);
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-4">
@@ -33,7 +36,7 @@ const Dashboard = () => {
                 </h2>
                 <p className="text-gray-600 mt-1">{user?.email}</p>
 
-              
+
                 <button className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">
                     ✏️ Edit Profile
                 </button>

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../Provider/AuthProvider'; // make sure the path is correct
+import { AuthContext } from '../Provider/AuthProvider'; 
 
 const Call = () => {
     const { user } = useContext(AuthContext);

@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+
 const PopularTours = () => {
   const [tours, setTours] = useState([]);
+
 
   useEffect(() => {
     fetch('http://localhost:5000/tours')
       .then(res => res.json())
       .then(data => {
-        // Filter only tours where category is "Popular"
         const popularTours = data.filter(tour => tour.category === 'popular');
         setTours(popularTours);
       })
       .catch(err => console.error('Error loading tours:', err));
   }, []);
+
 
   return (
     <div>

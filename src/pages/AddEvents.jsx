@@ -1,11 +1,12 @@
 
-
 import { useContext } from 'react';
 import Swal from 'sweetalert2';
 import { AuthContext } from "../Provider/AuthProvider";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const AddEvents = () => {
     const { user } = useContext(AuthContext);
+    const axiosSecure = useAxiosSecure();
     const handleSubmit = async (e) => {
         e.preventDefault();
         const form = e.target;
@@ -22,28 +23,33 @@ const AddEvents = () => {
             organizerEmail: user.email,
         };
 
-        const res = await fetch("http://localhost:5000/tours", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(eventData),
-        });
-
-        if (res.ok) {
-            Swal.fire({
-                icon: "success",
-                title: "Event Added!",
-                text: "Your event has been successfully added.",
-                timer: 2000,
-                showConfirmButton: false
-            });
-            form.reset();
-        } else {
+        try {
+            const res = await axiosSecure.post("/tours", eventData);
+            if (res.data.insertedId) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Event Added!",
+                    text: "Your event has been successfully added.",
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+                form.reset();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops!",
+                    text: "Failed to add the event. Please try again.",
+                });
+            }
+        } catch (error) {
             Swal.fire({
                 icon: "error",
                 title: "Oops!",
-                text: "Failed to add the event. Please try again."
+                text: error.response?.data?.message || "Failed to add the event. Please try again.",
             });
         }
+
+      
     };
 
     return (
@@ -59,7 +65,7 @@ const AddEvents = () => {
                 <input name="date" type="datetime-local" className="input input-bordered w-full" required />
                 <input name="organizer" placeholder="Organizer Name" className="input input-bordered w-full" required />
                 <input name="ticketQuantity" type="number" placeholder="Total Tickets" className="input input-bordered w-full" required />
-                <input name="category" placeholder="Category (Popular, Sports, etc)" className="input input-bordered w-full" required />        
+                <input name="category" placeholder="Category (Popular, Sports, etc)" className="input input-bordered w-full" required />
                 <button className="btn btn-primary w-full mt-4">Submit Event</button>
             </form>
         </div>

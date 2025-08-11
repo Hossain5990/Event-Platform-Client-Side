@@ -6,17 +6,25 @@ import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const MyTickets = () => {
   const { user } = useContext(AuthContext);
- const axiosSecure = useAxiosSecure();
+  const axiosSecure = useAxiosSecure();
   const [bookings, setBookings] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editedQuantity, setEditedQuantity] = useState(1);
 
+ 
   useEffect(() => {
-    fetch(`http://localhost:5000/bookTickets?email=${user.email}`)
-      .then(res => res.json())
-      .then(data => setBookings(data));
-  }, [user.email]);
-
+    if (user?.email) {
+      axiosSecure
+        .get(`/bookTickets?email=${user.email}`)
+        .then(res => {
+          setBookings(res.data || []);
+        })
+        .catch(err => {
+          console.error("Error fetching bookings:", err);
+          Swal.fire("Error", "Failed to load bookings", "error");
+        });
+    }
+  }, [axiosSecure, user?.email]);
 
   const handleCancel = async (booking) => {
     const confirm = await Swal.fire({
@@ -35,7 +43,7 @@ const MyTickets = () => {
       }
 
       // Convert BDT to USD cents
-      const exchangeRate = 110; 
+      const exchangeRate = 110;
       const usdAmount = booking.totalPrice / exchangeRate;
       const amountInCents = Math.round(usdAmount * 100);
 
@@ -75,19 +83,46 @@ const MyTickets = () => {
   };
 
   // Save update
-  const handleSave = (booking) => {
+  // const handleSave = (booking) => {
+  //   const unitPrice = booking.totalPrice / booking.quantity;
+
+  //   fetch(`http://localhost:5000/bookTickets/${booking._id}`, {
+  //     method: "PATCH",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       quantity: editedQuantity,
+  //       price: unitPrice
+  //     }),
+  //   })
+  //     .then(res => res.json())
+  //     .then(updated => {
+  //       setBookings(prev =>
+  //         prev.map(b =>
+  //           b._id === booking._id
+  //             ? {
+  //               ...b,
+  //               quantity: editedQuantity,
+  //               totalPrice: editedQuantity * unitPrice
+  //             }
+  //             : b
+  //         )
+  //       );
+  //       setEditingId(null);
+  //       Swal.fire("Updated!", "Ticket quantity and price updated.", "success");
+
+  //     });
+  // };
+
+  const handleSave = async (booking) => {
     const unitPrice = booking.totalPrice / booking.quantity;
 
-    fetch(`http://localhost:5000/bookTickets/${booking._id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    try {
+      const res = await axiosSecure.patch(`/bookTickets/${booking._id}`, {
         quantity: editedQuantity,
         price: unitPrice
-      }),
-    })
-      .then(res => res.json())
-      .then(updated => {
+      });
+
+      if (res.data.modifiedCount > 0) {
         setBookings(prev =>
           prev.map(b =>
             b._id === booking._id
@@ -101,8 +136,11 @@ const MyTickets = () => {
         );
         setEditingId(null);
         Swal.fire("Updated!", "Ticket quantity and price updated.", "success");
-
-      });
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      Swal.fire("Error", "Failed to update booking", "error");
+    }
   };
 
   if (bookings.length === 0) return <p className="mb-4 md:mb-6 text-gray-600 text-3xl font-bold text-center">No Bookings.....</p>;
@@ -153,7 +191,7 @@ const MyTickets = () => {
                   </>
                 ) : (
                   <div className="flex gap-2 mt-2 justify-end">
-{/* 
+                    {/* 
                     <button
                       className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded font-semibold"
                       onClick={() => handleUpdate(booking)}

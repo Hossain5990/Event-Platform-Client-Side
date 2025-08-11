@@ -12,8 +12,7 @@ const AllTours = () => {
       .then((data) => setTours(data));
   }, [refreshKey]); 
 
-  
-    useEffect(() => {
+  useEffect(() => {
     if (location.state?.refresh) {
       setRefreshKey(prev => prev + 1);
     }

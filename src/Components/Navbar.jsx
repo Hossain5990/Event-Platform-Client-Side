@@ -40,6 +40,7 @@ const Navbar = () => {
     const links = <>
 
         <li><NavLink className={navLinkClass} to='/'>Home</NavLink></li>
+        <li><NavLink className={navLinkClass} to='/alltours'>All Tours</NavLink></li>
         
         {
             user && !isAdminLoading && (
@@ -53,7 +54,7 @@ const Navbar = () => {
                     </>
                 ) : (
                     <>
-                        <li><NavLink className={navLinkClass} to='/alltours'>All Tours</NavLink></li>
+                       
                         <li><NavLink className={navLinkClass} to='/mytickets'>My Tickets</NavLink></li>
                         <li><NavLink className={navLinkClass} to='/dashboard'>Dashboard</NavLink></li>
                         <li><NavLink className={navLinkClass} to='/paymenthistory'>Payment History</NavLink></li>

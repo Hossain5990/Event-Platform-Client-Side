@@ -1,20 +1,27 @@
 
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const TourDetails = () => {
     const { id } = useParams();
+    const axiosSecure = useAxiosSecure();
     const [tour, setTour] = useState(null);
 
+
+
+
     useEffect(() => {
-        fetch(`http://localhost:5000/tours/${id}`)
-            .then(res => {
-                if (!res.ok) throw new Error("Tour not found");
-                return res.json();
-            })
-            .then(data => setTour(data))
-            .catch(err => console.error("Error loading tour:", err));
-    }, [id]);
+        if (!id) return;
+
+        axiosSecure
+            .get(`/tours/${id}`)
+            .then(res => setTour(res.data))
+            .catch(err => {
+                console.error("Error loading tour:", err);
+                setTour(null);
+            });
+    }, [id, axiosSecure]);
 
     if (!tour) return <p className="p-6 text-center">Loading tour details...</p>;
 

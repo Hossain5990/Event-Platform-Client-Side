@@ -1,6 +1,6 @@
 
 import axios from "axios";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Provider/AuthProvider";
 
@@ -13,8 +13,9 @@ const useAxiosSecure = () => {
   const navigate = useNavigate();
   const { signOutUser } = useContext(AuthContext); 
 
+   useEffect(() => {
   // Attach token before each request
-  axiosSecure.interceptors.request.use(
+ const requestInterceptor = axiosSecure.interceptors.request.use(
     config => {
       const token = localStorage.getItem("access-token");
       if (token) {
@@ -26,7 +27,7 @@ const useAxiosSecure = () => {
   );
 
   // Handle 401/403 responses
-  axiosSecure.interceptors.response.use(
+ const responseInterceptor =  axiosSecure.interceptors.response.use(
     response => response,
     async error => {
       if (error.response?.status === 401 || error.response?.status === 403) {
@@ -36,6 +37,14 @@ const useAxiosSecure = () => {
       return Promise.reject(error);
     }
   );
+
+   return () => {
+      axiosSecure.interceptors.request.eject(requestInterceptor);
+      axiosSecure.interceptors.response.eject(responseInterceptor);
+    };
+  }, [navigate, signOutUser]);
+
+  
 
   return axiosSecure;
 };

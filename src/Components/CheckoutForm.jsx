@@ -2,10 +2,12 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const CheckoutForm = ({ bookingData, tourId, onSuccess }) => {
     const stripe = useStripe();
     const elements = useElements();
+    const axiosSecure = useAxiosSecure();
     const [processing, setProcessing] = useState(false);
 
     const handleSubmit = async (event) => {
@@ -13,24 +15,19 @@ const CheckoutForm = ({ bookingData, tourId, onSuccess }) => {
         setProcessing(true);
 
         try {
-            //Create Payment Intent
-            const res = await fetch("http://localhost:5000/create-payment-intent", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ price: bookingData.totalPrice }),
+            // Create Payment Intent
+            const { data: paymentData } = await axiosSecure.post("/create-payment-intent", {
+                price: bookingData.totalPrice
             });
-
-            const paymentData = await res.json();
 
             if (!paymentData.clientSecret) {
                 throw new Error("Payment creation failed");
             }
 
-            const clientSecret = paymentData.clientSecret;
             const card = elements.getElement(CardElement);
 
-            //Confirm payment with Stripe
-            const paymentResult = await stripe.confirmCardPayment(clientSecret, {
+            // Confirm payment with Stripe
+            const paymentResult = await stripe.confirmCardPayment(paymentData.clientSecret, {
                 payment_method: { card },
             });
 
@@ -39,41 +36,29 @@ const CheckoutForm = ({ bookingData, tourId, onSuccess }) => {
             const paymentIntent = paymentResult.paymentIntent;
 
             if (paymentIntent?.status === "succeeded") {
-                //Save booking with Stripe data
-                const saveRes = await fetch("http://localhost:5000/bookTickets", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        ...bookingData,
-                        paymentIntentId: paymentIntent.id,
-                        stripeAmount: paymentIntent.amount,
-                        currency: paymentIntent.currency
-                    }),
+                // Save booking
+                const { data: result } = await axiosSecure.post("/bookTickets", {
+                    ...bookingData,
+                    paymentIntentId: paymentIntent.id,
+                    stripeAmount: paymentIntent.amount,
+                    currency: paymentIntent.currency
                 });
 
-                const result = await saveRes.json();
-
                 if (result.insertedId) {
-
-                    await fetch('http://localhost:5000/payments', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            // add authorization header if needed
-                        },
-                        body: JSON.stringify({
-                            email: bookingData.email,
-                            tourTitle: bookingData.tourTitle,
-                            tourId: bookingData.tourId,
-                            quantity: bookingData.quantity,
-                            totalPrice: bookingData.totalPrice,
-                            transactionId: paymentIntent.id,
-                            organizerEmail:  bookingData.organizerEmail,
-                            bookingId: result.insertedId,
-                            status: "paid",
-                            date: new Date()
-                        })
+                    // Save payment record
+                    await axiosSecure.post("/payments", {
+                        email: bookingData.email,
+                        tourTitle: bookingData.tourTitle,
+                        tourId: bookingData.tourId,
+                        quantity: bookingData.quantity,
+                        totalPrice: bookingData.totalPrice,
+                        transactionId: paymentIntent.id,
+                        organizerEmail: bookingData.organizerEmail,
+                        bookingId: result.insertedId,
+                        status: "paid",
+                        date: new Date()
                     });
+
                     Swal.fire("Success", "Ticket booked successfully!", "success");
                     onSuccess();
                 } else {
