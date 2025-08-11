@@ -1,14 +1,14 @@
 
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import useAdmin from "../hooks/useAdmin";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const TourDetails = () => {
     const { id } = useParams();
     const axiosSecure = useAxiosSecure();
     const [tour, setTour] = useState(null);
-
-
+    const [isAdmin, isAdminLoading] = useAdmin();
 
 
     useEffect(() => {
@@ -49,9 +49,24 @@ const TourDetails = () => {
                         <p><strong>Available Tickets:</strong> {tour.ticketQuantity}</p>
                         <p><strong>Category:</strong> {tour.category}</p>
                     </div>
-                    <Link to={`/bookticket/${tour._id}`}><button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-4 py-2 rounded">
+                    {/* <Link to={`/bookticket/${tour._id}`}><button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-4 py-2 rounded">
                         Book Now
-                    </button></Link>
+                    </button></Link> */}
+                    {isAdmin ? 
+                        <button
+                            disabled
+                            className="bg-gray-400 text-white font-semibold px-4 py-2 rounded cursor-not-allowed"
+                            title="Admins cannot book tickets"
+                        >
+                            Admins cannot book tickets
+                        </button>
+                    : 
+                        <Link to={`/bookticket/${tour._id}`}>
+                            <button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-4 py-2 rounded">
+                                Book Now
+                            </button>
+                        </Link>
+                    }
                 </div>
             </div>
         </div>

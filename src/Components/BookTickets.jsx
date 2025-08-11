@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutForm from "./CheckoutForm";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const stripePromise = loadStripe("pk_test_51RtNMZQK2yqXqqAkTpN5GQtPReERO8uGeFgp4yDGApcrhcpuA50zechsAFF9wdIw6Fe9FKCX1SeOnO1aqGtJo6rG00VzGNmuGO");
 
@@ -13,25 +14,30 @@ const BookTickets = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
-
+    const axiosSecure = useAxiosSecure();
     const [tour, setTour] = useState(null);
     const [form, setForm] = useState({ name: "", email: "", quantity: 1 });
     const [bookingData, setBookingData] = useState(null);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/tours/${id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setTour(data);
+        if (!id) return;
+
+        axiosSecure.get(`/tours/${id}`)
+            .then(res => {
+                setTour(res.data);
                 if (user) {
-                    setForm((prev) => ({
+                    setForm(prev => ({
                         ...prev,
                         name: user.displayName || "",
                         email: user.email || "",
                     }));
                 }
+            })
+            .catch(err => {
+                console.error("Error fetching tour:", err);
+                Swal.fire("Error", "Failed to load tour data.", "error");
             });
-    }, [id, user]);
+    }, [id, user, axiosSecure]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -52,37 +58,42 @@ const BookTickets = () => {
             return;
         }
 
-        // Check if user already booked
-        const checkRes = await fetch(`http://localhost:5000/bookTickets/check?email=${form.email}&tourId=${tour._id}`);
-        const checkData = await checkRes.json();
+        try {
+            // Check if user already booked 
+            const { data: checkData } = await axiosSecure.get(`/bookTickets/check`, {
+                params: { email: form.email, tourId: tour._id }
+            });
 
-        if (checkData.exists) {
-            Swal.fire({
-                icon: "warning",
-                title: "Already Booked!",
-                text: "You’ve already booked this tour.",
-                confirmButtonText: "Go to All Tours",
-            }).then(() => navigate("/alltours"));
-            return;
+            if (checkData.exists) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Already Booked!",
+                    text: "You’ve already booked this tour.",
+                    confirmButtonText: "Go to All Tours",
+                }).then(() => navigate("/alltours"));
+                return;
+            }
+
+            const totalPrice = requestedQty * parseInt(tour.price);
+            const booking = {
+                ...form,
+                tourId: tour._id,
+                image: tour.image,
+                tourTitle: tour.title,
+                location: tour.location,
+                totalPrice,
+                quantity: requestedQty,
+                tourDate: tour.date,
+                bookingDate: new Date().toISOString(),
+                organizerEmail: tour.organizerEmail,
+            };
+
+            setBookingData(booking);
+        } catch (err) {
+            console.error("Booking check error:", err);
+            Swal.fire("Error", "Failed to verify booking.", "error");
         }
 
-        // Prepare booking data for payment
-        const totalPrice = requestedQty * parseInt(tour.price);
-        const booking = {
-            ...form,
-            tourId: tour._id,
-            image: tour.image,
-            tourTitle: tour.title,
-            location: tour.location,
-            totalPrice, 
-            quantity: requestedQty,
-            tourDate: tour.date,
-            bookingDate: new Date().toISOString(),
-            organizerEmail: tour.organizerEmail,
-            
-        };
-
-        setBookingData(booking);
     };
 
     if (!tour) return <p className="text-center p-10">Loading tour info...</p>;

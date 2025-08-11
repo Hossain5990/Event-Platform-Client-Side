@@ -73,6 +73,8 @@ const CheckoutForm = ({ bookingData, tourId, onSuccess }) => {
         setProcessing(false);
     };
 
+    
+
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <CardElement className="border p-3 rounded" />
