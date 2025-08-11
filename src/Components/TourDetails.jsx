@@ -8,7 +8,7 @@ const TourDetails = () => {
     const { id } = useParams();
     const axiosSecure = useAxiosSecure();
     const [tour, setTour] = useState(null);
-    const [isAdmin, isAdminLoading] = useAdmin();
+    const [isAdmin] = useAdmin();
 
 
     useEffect(() => {
@@ -52,7 +52,8 @@ const TourDetails = () => {
                     {/* <Link to={`/bookticket/${tour._id}`}><button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-4 py-2 rounded">
                         Book Now
                     </button></Link> */}
-                    {isAdmin ? 
+                    {
+                    isAdmin ? 
                         <button
                             disabled
                             className="bg-gray-400 text-white font-semibold px-4 py-2 rounded cursor-not-allowed"
